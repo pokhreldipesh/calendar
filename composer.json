@@ -1,0 +1,28 @@
+{
+    "name": "dipesh/calendar",
+    "description": "A PHP package that builds a complete Nepali calendar effortlessly, serving as a wrapper around the dipesh/nepali-date package. It allows users to generate and manipulate a full Nepali calendar, add events, and perform date calculations without any prior knowledge of the underlying system.",
+    "type": "library",
+    "keywords": [
+        "date",
+        "Nepali Date",
+        "Nepali Calendar",
+        "Calendar"
+    ],
+    "autoload": {
+        "psr-4": {
+            "Dipesh\\Calendar\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.0",
+        "dipesh/nepali-date": "^2.0"
+    },
+    "authors": [
+        {
+            "name": "Dipesh Pokhrel",
+            "email": "dipeshpokhrel404@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
