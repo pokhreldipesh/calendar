@@ -15,7 +15,7 @@
     },
     "require": {
         "php": ">=8.0",
-        "dipesh/nepali-date": "^2.0"
+        "dipesh/nepali-date": "^2.1"
     },
     "authors": [
         {

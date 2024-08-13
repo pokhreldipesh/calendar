@@ -2,6 +2,7 @@
 
 namespace Dipesh\Calendar;
 
+use Dipesh\Calendar\Concerns\HasLanguage;
 use Exception;
 
 /**
@@ -13,6 +14,7 @@ use Exception;
  */
 class Calendar
 {
+    use HasLanguage;
     /**
      * The current date instance.
      *
@@ -55,6 +57,7 @@ class Calendar
      */
     public array $days;
 
+
     /**
      * Calendar constructor.
      * Initializes a new Calendar instance with the specified date or defaults to the current date.
@@ -64,6 +67,8 @@ class Calendar
      */
     public function __construct(mixed $date = null)
     {
+        $this->language = $this->getLanguage();
+
         $this->setUp($date);
     }
 
@@ -77,7 +82,7 @@ class Calendar
      */
     protected function setUp(mixed $date): void
     {
-        $this->current = (new Date($date))->setLang("np");
+        $this->current = (new Date($date))->setLang($this->language);
         $this->year = $this->current->year;
         $this->month = $this->current->month;
         $this->day = $this->current->day;
@@ -137,6 +142,7 @@ class Calendar
      *
      * @param callable|array $events The events to set, either as a callable function or an associative array.
      * @return static Returns the current Calendar instance for method chaining.
+     * @throws Exception
      */
     public function setEvents(callable|array $events): static
     {
@@ -197,5 +203,10 @@ class Calendar
     {
         $this->setUp(sprintf("%d/1/1", $this->year - 1));
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return  $this->current->date;
     }
 }
