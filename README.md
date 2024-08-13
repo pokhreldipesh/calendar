@@ -103,6 +103,20 @@ $fetchEvents = function ($calendarInstance, $days) {
 $calendar->setEvents($fetchEvents);
 ```
 
+## Example Project
+
+To help you get started with the Nepali Calendar package, an example project is available for you to download and inspect. This project demonstrates how to implement the calendar with event management features effectively.
+
+### Screenshot of Example Project
+
+<p align="left"><img style="height: 300px;" src="./example.png" alt="Example Project Screenshot"></p>
+
+### Download Example Project
+
+You can download the example project from the following link:
+
+[Download Example Project](https://github.com/pokhreldipesh/calendar-example)
+
 ## Contributing
 
 Contributions are welcome! If you have suggestions, improvements, or bug fixes, please submit a pull request or open an issue.
