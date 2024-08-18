@@ -3,6 +3,8 @@
 namespace Dipesh\Calendar;
 
 use Dipesh\Calendar\Concerns\HasLanguage;
+use Dipesh\Calendar\Concerns\HasNavigation;
+use Dipesh\Calendar\Concerns\HasEvent;
 use Exception;
 
 /**
@@ -14,13 +16,20 @@ use Exception;
  */
 class Calendar
 {
-    use HasLanguage;
+    use HasLanguage, HasNavigation, HasEvent;
+
     /**
-     * The current date instance.
+     * The current date instance which will changes on calendar navigation eg: on next, prev etc
      *
      * @var Date
      */
     public Date $current;
+
+    /**
+     * Today's date object and this will remains constant on every calendar navigation
+     *
+     */
+    public Date $today;
 
     /**
      * The year of the current date.
@@ -57,7 +66,6 @@ class Calendar
      */
     public array $days;
 
-
     /**
      * Calendar constructor.
      * Initializes a new Calendar instance with the specified date or defaults to the current date.
@@ -70,6 +78,10 @@ class Calendar
         $this->language = $this->getLanguage();
 
         $this->setUp($date);
+
+        $this->today = $date
+            ? new Date(language: $this->language)
+            : $this->current; // This is reference for todays date
     }
 
     /**
@@ -82,12 +94,15 @@ class Calendar
      */
     protected function setUp(mixed $date): void
     {
-        $this->current = (new Date($date))->setLang($this->language);
+        $this->current = new Date(date: $date, language: $this->language);
         $this->year = $this->current->year;
         $this->month = $this->current->month;
         $this->day = $this->current->day;
 
-        $this->monthDay = $this->current::$bs[$this->current->year][$this->current->month - 1];
+        $this->monthDay =
+            $this->current::$bs[$this->current->year][
+                $this->current->month - 1
+            ];
 
         $this->setDaysInMonth();
     }
@@ -115,98 +130,34 @@ class Calendar
     public function setDaysInMonth(): void
     {
         for ($i = 1; $i <= $this->monthDay; $i++) {
-            $this->days[$i] = $this->current->create(sprintf("%d/%d/%d", $this->year, $this->month, $i));
+            $this->days[$i] = $this->current->create(
+                sprintf("%d/%d/%d", $this->year, $this->month, $i)
+            );
         }
     }
 
     /**
-     * Sets an event for a specific date in the calendar.
+     * Get calendar days of current month. returns date object of each day in array and if you need furhter modification you can use callback function.
      *
-     * @param string|int $date The date for which to set the event, either as a day number (1-31) or a date string.
-     * @param array|string $event The details of the event to associate with the specified date.
-     * @return void
-     * @throws Exception Thrown if the date is invalid or if the event cannot be set.
+     * @return array
+     * @param callable(): array $callback
      */
-    public function setEvent(string|int $date, array|string $event): void
+    public function getDays(callable $callback = null): array
     {
-        if (is_numeric($date)) {
-            $this->days[$date] = $event;
-        } else {
-            $this->days[$this->current->make($date)->day] = $event;
-        }
-    }
-
-    /**
-     * Sets multiple events for the calendar using a callable function or an associative array.
-     * This allows for dynamic event setting, such as fetching events from a database.
-     *
-     * @param callable|array $events The events to set, either as a callable function or an associative array.
-     * @return static Returns the current Calendar instance for method chaining.
-     * @throws Exception
-     */
-    public function setEvents(callable|array $events): static
-    {
-        if (is_callable($events)) {
-            $events($this, $this->days);
-        } else {
-            foreach ($events as $key => $event) {
-                $this->setEvent($key, $event);
-            }
+        if (is_callable($callback)) {
+            return $callback($this->days);
         }
 
-        return $this;
+        return $this->days;
     }
 
     /**
-     * Moves the calendar to the next month, updating the current date and the days accordingly.
+     * Get formatted current date
      *
-     * @return static Returns the current Calendar instance for method chaining.
-     * @throws Exception Thrown if the new date cannot be processed.
+     * @return string
      */
-    public function nextMonth(): static
-    {
-        $this->setUp($this->current->make($this->year.'/'.$this->month."/1")->addDays($this->monthDay));
-        return $this;
-    }
-
-    /**
-     * Moves the calendar to the previous month, updating the current date and the days accordingly.
-     *
-     * @return static Returns the current Calendar instance for method chaining.
-     * @throws Exception Thrown if the new date cannot be processed.
-     */
-    public function prevMonth(): static
-    {
-        $this->setUp($this->current->make($this->year.'/'.$this->month."/1")->subDays($this->monthDay));
-        return $this;
-    }
-
-    /**
-     * Advances the calendar to the next year, resetting the current date to January 1st of the following year.
-     *
-     * @return static Returns the current Calendar instance for method chaining.
-     * @throws Exception Thrown if the new date cannot be processed.
-     */
-    public function nextYear(): static
-    {
-        $this->setUp(sprintf("%d/1/1", $this->year + 1));
-        return $this;
-    }
-
-    /**
-     * Rewinds the calendar to the previous year, resetting the current date to January 1st of the previous year.
-     *
-     * @return static Returns the current Calendar instance for method chaining.
-     * @throws Exception Thrown if the new date cannot be processed.
-     */
-    public function prevYear(): static
-    {
-        $this->setUp(sprintf("%d/1/1", $this->year - 1));
-        return $this;
-    }
-
     public function __toString(): string
     {
-        return  $this->current->date;
+        return $this->current->date;
     }
 }
