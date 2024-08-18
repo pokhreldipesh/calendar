@@ -1,8 +1,6 @@
 <?php
 namespace Dipesh\Calendar;
 
-use Dipesh\NepaliDate\Contracts\Language;
-use Dipesh\NepaliDate\lang\Nepali;
 use Dipesh\NepaliDate\NepaliDate;
 
 /**
@@ -16,14 +14,6 @@ use Dipesh\NepaliDate\NepaliDate;
  */
 class Date extends NepaliDate
 {
-    /**
-     * @return Language
-     */
-    public function getLanguage(): Language
-    {
-        return new Nepali();
-    }
-
     /**
      * @var string|array $event The event(s) associated with the date.
      */

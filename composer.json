@@ -3,11 +3,14 @@
     "description": "A PHP package that builds a complete Nepali calendar effortlessly, serving as a wrapper around the dipesh/nepali-date package. It allows users to generate and manipulate a full Nepali calendar, add events, and perform date calculations without any prior knowledge of the underlying system.",
     "type": "library",
     "keywords": [
+        "nepalicalendar",
+        "nepalidate",
         "date",
         "Nepali Date",
         "Nepali Calendar",
         "Calendar"
     ],
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Dipesh\\Calendar\\": "src/"
